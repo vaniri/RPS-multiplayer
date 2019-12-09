@@ -46,5 +46,55 @@ function storeChoice(choice) {
 
 roundRef.onSnapshot(snapshot => {
     console.log("Got snapshot: " + JSON.stringify(snapshot.data()));
+    let users = Object.keys(snapshot.data());
+    if (snapshot.data() && users.length === 2) {
+        let myUser = $("#nickname").val();
+        let myChoice = snapshot.data()[myUser];
+        let otherUser = users.filter(el => el !== myUser)[0];    
+        console.log(snapshot.data());
+                console.log(otherUser, myUser);
+        let otherUserChoice = snapshot.data()[otherUser];
+        console.log(myChoice, otherUserChoice);
+        gameLogic(myChoice, otherUserChoice);
+        roundRef.set({});
+    }
 });
 
+const possibleChoices = ["rock", "paper", "scissors"];
+
+const gameTable = createTable();
+
+function gameLogic(myChoice, otherUserChoice) {
+    let result = gameTable[myChoice][otherUserChoice];
+    console.log(
+        `User entered ${myChoice}, computer chose ${otherUserChoice}, who won? ${result}`
+    );
+
+    showMeResult(result);
+    console.log(result);
+}
+
+function createTable() {
+    let table = {};
+    table["scissors"] = {};
+    table["scissors"]["scissors"] = 0;
+    table["scissors"]["rock"] = 2;
+    table["scissors"]["paper"] = 1;
+    table["rock"] = {};
+    table["rock"]["scissorocks"] = 1;
+    table["rock"]["rock"] = 0;
+    table["rock"]["paper"] = 2;
+    table["paper"] = {};
+    table["paper"]["scissorocks"] = 2;
+    table["paper"]["rock"] = 1;
+    table["paper"]["paper"] = 0;
+    return table;
+}
+
+function showMeResult (result) {
+    if (result === 1) {
+        console.log("You won!");
+    } else if (result === 2) {
+        console.log("You lose!")
+    } else {"Draw!"};
+} 
