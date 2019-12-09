@@ -1,0 +1,50 @@
+body {
+    text-align: center;
+    background-color: #56594A;
+}
+
+/* background-image: url("immage/2b87ce43e374d83b194fa4fe69745d9a.png");
+    background-repeat: no-repeat;
+    background-position: right top; 
+}*/
+
+span {
+    font-size: 30px;
+    font-family: "Lato", "Open Sans", "Helvetica Neue";
+    color: rgb(233, 226, 14);
+    font-weight: 400;
+}
+
+h1 {
+    color: #272844;
+    font-size: 25px;
+    font-weight: 200;
+}
+
+#image-container{
+    display: inline;
+}
+
+#image-container > img {
+   
+    margin: 0 30px;
+}
+
+.game {
+    margin: 0 100px;
+}
+
+#form {
+    margin: 20px 0;
+}
+#show_result {
+    color: white;
+    font-weight: 400;
+    font-family: "Lato", "Open Sans", "Helvetica Neue";
+    font-size: 25px;
+}
+
+#do_it {
+    color: #272844;
+}
+
