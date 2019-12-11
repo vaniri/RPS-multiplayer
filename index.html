@@ -1,40 +1,43 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Rock Paper Scissors</title>
-    <link rel="stylesheet" href="assets/style.css"/>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
-    <script src="https://code.jquery.com/jquery.js"></script>
-  </head>
 
-  <body>
-    <!-- Game interface section -->
-    <section class="main_game">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rock Paper Scissors</title>
+  <link rel="stylesheet" href="assets/style.css" />
+</head>
+
+<body>
+
+  <!-- Game interface section -->
+
+  <div id="game-container">
+    <div id="form-container">
       <h1>Welcome to the Rock, Papper and Scissors Game!</h1>
-  
-      <div id="game">
-        <h2 id="show_result">The winner is:</h2>
-        <h2 id="result"></h2>
-      </div>
       <div id="form">
-      <label for="nickname">Let's play! Enter your nickname</label>
-      <input type="text" id="nickname">
-      <input type="button" id="submit" value="Submit!"> </br>
+        <label for="nickname">Enter your nickname and play!</label>
+        <input type="text" id="nickname">
+        <input type="button" id="submit" value="Submit!"> </br>
       </div>
-      <div id="image-container"> 
-        <img class="choice-image" src="assets/image/rock.png" data-item="rock" width="100px" height="100px"/>
-        <img class="choice-image" src="assets/image/paper.png" data-item="paper" width="100px" height="100px"/>
-        <img class="choice-image" src="assets/image/scissors.png" data-item="scissors" width="100px" height="100px"/>
-      </div>
-    </section>
+    </div>
+    <div id="user-interaction"></div>
+    <div id="image-container">
+      <img class="choice-image" src="assets/image/rock.png" data-item="rock" width="100px" height="100px" />
+      <img class="choice-image" src="assets/image/paper.png" data-item="paper" width="100px" height="100px" />
+      <img class="choice-image" src="assets/image/scissors.png" data-item="scissors" width="100px" height="100px" />
+    </div>
+  </div>
 
-    <!-- Javascript part-->
-    <script src="assets/game.js"></script>
 
-  
-  </body>
+  <!-- Javascript part-->
+
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.5.0/firebase-firestore.js"></script>
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script src="assets/game.js"></script>
+
+</body>
+
 </html>

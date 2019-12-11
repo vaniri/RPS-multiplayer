@@ -13,6 +13,11 @@ const db = firebase.firestore();
 
 $("#submit").on("click", event => {
     event.preventDefault();
+    $("body").css('backgroundImage','url("")');
+    $("#form-container").hide();
+    $("#image-container").css('visibility', 'visible');
+    $("#user-interaction").css('visibility', 'visible');
+    $("#user-interaction").text("Make your choice!");
     db.collection("players").doc($("#nickname").val()).set({
         win: 0,
         lose: 0
@@ -24,6 +29,7 @@ $("#submit").on("click", event => {
 $(".choice-image").each(function () {
     $(this).on("click", () => {
         let choice = $(this).attr('data-item');
+        $("#user-interaction").text(`You chose: ${choice}`);
         storeChoice(choice);
     })
 });
@@ -46,13 +52,17 @@ function storeChoice(choice) {
 
 roundRef.onSnapshot(snapshot => {
     console.log("Got snapshot: " + JSON.stringify(snapshot.data()));
+    if (!snapshot.data()) {
+        return;
+    }
+
     let users = Object.keys(snapshot.data());
     if (snapshot.data() && users.length === 2) {
         let myUser = $("#nickname").val();
         let myChoice = snapshot.data()[myUser];
-        let otherUser = users.filter(el => el !== myUser)[0];    
+        let otherUser = users.filter(el => el !== myUser)[0];
         console.log(snapshot.data());
-                console.log(otherUser, myUser);
+        console.log(otherUser, myUser);
         let otherUserChoice = snapshot.data()[otherUser];
         console.log(myChoice, otherUserChoice);
         gameLogic(myChoice, otherUserChoice);
@@ -64,6 +74,23 @@ const possibleChoices = ["rock", "paper", "scissors"];
 
 const gameTable = createTable();
 
+function createTable() {
+    let table = {};
+    table["scissors"] = {};
+    table["scissors"]["scissors"] = 0;
+    table["scissors"]["rock"] = 2;
+    table["scissors"]["paper"] = 1;
+    table["rock"] = {};
+    table["rock"]["scissors"] = 1;
+    table["rock"]["rock"] = 0;
+    table["rock"]["paper"] = 2;
+    table["paper"] = {};
+    table["paper"]["scissors"] = 2;
+    table["paper"]["rock"] = 1;
+    table["paper"]["paper"] = 0;
+    return table;
+}
+
 function gameLogic(myChoice, otherUserChoice) {
     let result = gameTable[myChoice][otherUserChoice];
     console.log(
@@ -74,27 +101,14 @@ function gameLogic(myChoice, otherUserChoice) {
     console.log(result);
 }
 
-function createTable() {
-    let table = {};
-    table["scissors"] = {};
-    table["scissors"]["scissors"] = 0;
-    table["scissors"]["rock"] = 2;
-    table["scissors"]["paper"] = 1;
-    table["rock"] = {};
-    table["rock"]["scissorocks"] = 1;
-    table["rock"]["rock"] = 0;
-    table["rock"]["paper"] = 2;
-    table["paper"] = {};
-    table["paper"]["scissorocks"] = 2;
-    table["paper"]["rock"] = 1;
-    table["paper"]["paper"] = 0;
-    return table;
-}
 
-function showMeResult (result) {
+function showMeResult(result) {
+    const showResult = $('<h1 id="show-result"></h1>');
+    console.log(showResult);
+    $("#user-interaction").append.showResult;
     if (result === 1) {
-        console.log("You won!");
+        showResult.text("You won!");
     } else if (result === 2) {
-        console.log("You lose!")
-    } else {"Draw!"};
+        showResult.text("You lose!");
+    } else { showResult.text("Draw!") };
 } 
