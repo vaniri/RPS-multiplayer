@@ -16,29 +16,44 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-$("#submit").on("click", event => {
-    event.preventDefault();
-    $("body").css('backgroundImage', 'linear-gradient(to right, navy, aqua, #94A5AD');
-    $("#form-container").hide();
-    $("#game-container").css('visibility', 'visible');
-    $("#user-interaction").text("Make your choice!");
-    db.collection("players").doc($("#nickname").val()).set({
-        won: 0,
-        lose: 0
-    }).catch(function (error) {
-        console.error("Error adding document: ", error);
-    });
-});
+window.onload = () => { startGame(); }
 
-$(".choice-image").each(function () {
-    $(this).on("click", () => {
-        choice = $(this).attr('data-item');
-        $("#user-interaction").text(`You chose: ${choice}`);
-        storeChoice(choice);
-        //$(".choice-image:nover").removeAttr("style");
-        $(".choice-image").each(function () { $(this).off() });
-    });
-})
+const chatRef = db.collection("rounds").doc("chat");
+
+function startGame() {
+    $("#restart").hide();
+    $("#submit").on("click", event => {
+        event.preventDefault();
+        if(($("#nickname").val()) === "") { return; }
+        $("body").css('backgroundImage', 'linear-gradient(to right, navy, aqua, #94A5AD');
+        $("#form-container").hide();
+        $("#game-container").css('visibility', 'visible');
+        $("#chat-container").css('visibility', 'visible');
+        $("#user-interaction").text("Make your choice!");
+        db.collection("players").doc($("#nickname").val()).set({
+            won: 0,
+            lose: 0
+        }).catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
+
+        chatRef.set({ messages: [] });
+
+        handleChoice();
+    })
+}
+
+function handleChoice() {
+    $(".choice-image").each(function () {
+        $(this).on("click", () => {
+            let choice = $(this).attr('data-item');
+            $("#user-interaction").text(`You chose: ${choice}`);
+            storeChoice(choice);
+            $(".choice-image").hide();
+            storeChoice(choice);
+        });
+    })
+}
 
 const roundRef = db.collection("rounds").doc("round");
 
@@ -56,18 +71,17 @@ function storeChoice(choice) {
     }).catch(err => console.log("Error storing round: " + err));
 }
 
+
 roundRef.onSnapshot(snapshot => {
     console.log("Got snapshot: " + JSON.stringify(snapshot.data()));
     if (!snapshot.data()) {
         return;
     }
-
     let users = Object.keys(snapshot.data());
     if (snapshot.data() && users.length === 2) {
         let myUser = $("#nickname").val();
         let myChoice = snapshot.data()[myUser];
         let otherUser = users.filter(el => el !== myUser)[0];
-        console.log(snapshot.data());
         console.log(otherUser, myUser);
         let otherUserChoice = snapshot.data()[otherUser];
         console.log(myChoice, otherUserChoice);
@@ -98,23 +112,62 @@ function createTable() {
 
 function gameLogic(myChoice, otherUserChoice) {
     let result = gameTable[myChoice][otherUserChoice];
-    console.log(
-        `User entered ${myChoice}, computer chose ${otherUserChoice}, who won? ${result}`
-    );
-
     showMeResult(result);
-    console.log(result);
 }
 
 function showMeResult(result) {
     let showResult = $('<h1 id="show-result"></h1>');
-    console.log(showResult);
     $("#user-interaction").append(showResult);
     if (result === WIN) {
-        db.collection("players").doc($("#nickname").val()).update({won:firebase.firestore.FieldValue.increment(1)});
+        db.collection("players").doc($("#nickname").val()).update({ won: firebase.firestore.FieldValue.increment(1) });
         showResult.text("You won!");
+        starNewRound();
     } else if (result === LOSE) {
-        db.collection("players").doc($("#nickname").val()).update({lose:firebase.firestore.FieldValue.increment(1)});
+        db.collection("players").doc($("#nickname").val()).update({ lose: firebase.firestore.FieldValue.increment(1) });
         showResult.text("You lost !");
-    } else { showResult.text("Draw!") };
-} 
+        $("#user-interaction").text("");
+        starNewRound();
+    } else {
+        showResult.text("Draw!");
+        starNewRound();
+    };
+}
+
+function starNewRound() {
+    $("#restart").show();
+    $("#restart").on("click", () => {
+        $(".choice-image").show();
+        $("#user-interaction").text("Make your choice!");
+        $(".choice-image").each(function () { $(this).on() });
+        $("#restart").hide();
+        $("#show-result").hide();
+    })
+}
+
+$("#chat-button").on("click", () => {
+    event.preventDefault();
+    chat();
+})
+
+function chat() {
+    let myUser = $("#nickname").val();
+    let chatInput = $("#chat").val();
+    let updateChat = {message: chatInput, nick: myUser };
+    chatRef.update({
+        messages: firebase.firestore.FieldValue.arrayUnion(updateChat)
+    }).catch(err => console.log("Error storing chat message: " + err));
+    for(let prop in updateChat) {
+    console.log(updateChat[prop]);
+    $("#chat-section").prepend(`${updateChat[prop]} `);
+    $("#chat-section").prepend($("<br>"));
+
+    }
+}
+
+
+chatRef.onSnapshot(snapshot => {
+    console.log("Got chat snapshot: " + JSON.stringify(snapshot.data()));
+    if (!snapshot.data()) {
+        return;
+    }
+})
