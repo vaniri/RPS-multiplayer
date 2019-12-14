@@ -156,12 +156,6 @@ function chat() {
     chatRef.update({
         messages: firebase.firestore.FieldValue.arrayUnion(updateChat)
     }).catch(err => console.log("Error storing chat message: " + err));
-    for(let prop in updateChat) {
-    console.log(updateChat[prop]);
-    $("#chat-section").prepend(`${updateChat[prop]} `);
-    $("#chat-section").prepend($("<br>"));
-
-    }
 }
 
 
@@ -169,5 +163,10 @@ chatRef.onSnapshot(snapshot => {
     console.log("Got chat snapshot: " + JSON.stringify(snapshot.data()));
     if (!snapshot.data()) {
         return;
+    }
+    for(let prop of snapshot.data().messages) {
+        console.log(`${prop.nick}: ${prop.message}`);
+        $("#chat-section").prepend(`${prop.nick}: ${prop.message}`);
+        $("#chat-section").prepend($("<br>"));
     }
 })
