@@ -125,7 +125,6 @@ function showMeResult(result) {
     } else if (result === LOSE) {
         db.collection("players").doc($("#nickname").val()).update({ lose: firebase.firestore.FieldValue.increment(1) });
         showResult.text("You lost !");
-        $("#user-interaction").text("");
         starNewRound();
     } else {
         showResult.text("Draw!");
@@ -153,6 +152,7 @@ function chat() {
     let myUser = $("#nickname").val();
     let chatInput = $("#chat").val();
     let updateChat = {message: chatInput, nick: myUser };
+    console.log("sending " + JSON.stringify(updateChat));
     chatRef.update({
         messages: firebase.firestore.FieldValue.arrayUnion(updateChat)
     }).catch(err => console.log("Error storing chat message: " + err));
@@ -164,8 +164,8 @@ chatRef.onSnapshot(snapshot => {
     if (!snapshot.data()) {
         return;
     }
+    $("#chat-section").text("");
     for(let prop of snapshot.data().messages) {
-        console.log(`${prop.nick}: ${prop.message}`);
         $("#chat-section").prepend(`${prop.nick}: ${prop.message}`);
         $("#chat-section").prepend($("<br>"));
     }

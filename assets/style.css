@@ -3,18 +3,24 @@ body {
   min-height: 100%;
 }
 
+html{
+  overflow-y: scroll;
+}
+
 body {
   background-image: url("image/Enlight29.jpg");
   text-align: center;
   background-size: cover;
   background-color: black;
   color: white;
+  font-family: 'Girassol', cursive;;
   font-size: 25px;
+  font-weight: 100;
   color: #94a5ad;
 }
 
 #start-container {
-  margin: auto;
+  margin: 5vw auto 0 auto;
   display: block;
 }
 
@@ -38,7 +44,13 @@ input {
 #nickname {
   margin: 1vw;
   background-color: black;
-  color: white;
+  color: aqua;
+  border: none;
+  border-bottom: 2px solid azure;
+}
+
+#nickname:hover {
+  border-bottom: 2px solid azure;
 }
 
 #submit {
@@ -47,13 +59,14 @@ input {
   color: black;
   border: solid 0.07em silver;
   font-weight: 200;
-  font-family: "Lilita One", cursive;
+  font-family: 'Girassol', cursive;;
   box-shadow: 2px 2px 2px lavender, 0 2px 10px 0 cornflowerblue;
 }
 
 #submit:hover {
   background-color: aqua;
   cursor: pointer;
+  border: solid 0.07em black;
 }
 
 #game-container {
@@ -72,13 +85,13 @@ input {
 #image-container {
   display: inline-block;
   position: relative;
-  margin: 3vw;
+  margin: 1vw 0;
 }
 
 .choice-image {
   max-width: 100%;
   max-height: 100%;
-  margin: 0 0.5vw;
+  margin: 1vw;
   border-radius: 20%;
   background-color: white;
   transition-timing-function: ease-in-out;
@@ -87,10 +100,9 @@ input {
 }
 
 .choice-image:hover {
-  margin: 0 30px;
-  transform: scale(1);
+  margin: 0.1vw;
   cursor: pointer;
-  padding: 10px;
+  padding: 0.9vw;
   box-shadow: 1px 1px 10px 5px cornflowerblue;
 }
 
@@ -100,23 +112,44 @@ input {
   border: 0.1em solid blue;
   border-radius: 0.12em;
   font-weight: 500;
-  color: blue;
+  color: lavender;
   text-align: center;
-  background-color: black;
-  box-shadow: 2px 2px 2px blue;
-  font-family: "Lilita One", cursive;
+  background-color: blue;
+  box-shadow: 2px 2px 2px lavender;
+  font-family: 'Girassol', cursive;
+}
+
+#restart:hover{
+  background-color: aqua;
+  color:black;
+  border: 0.1em solid black;
+  cursor: pointer;
 }
 
 #chat-container {
    visibility: hidden;
-   background-color: black;
+    background-color: #000000E2;
     max-width: 60%;
     margin: auto;
     margin-top: 2vw;
-    opacity: 80%;
+    font-family: 'Inria Serif', serif;
+    font-size: 20px;
     color: aqua;
 }
 
 #chat{
   margin-top: 1vw;
+}
+
+#chat-button{
+  color: black;
+  background-color: aqua;
+  font-weight: 200;
+  font-family: 'Girassol', cursive;
+  border: 0.1em solid black;
+}
+
+#chat-button:hover {
+  background-color: navy;
+  border: 0.1em solid black;
 }
