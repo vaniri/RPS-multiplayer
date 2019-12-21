@@ -6,13 +6,12 @@
   <title>Rock Paper Scissors</title>
   <link rel="stylesheet" href="assets/style.css" />
   <link href="https://fonts.googleapis.com/css?family=Girassol|Inria+Serif&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Girassol&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Girassol&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
   <!-- Game section -->
-
   <div id="start-container">
     <div id="form-container">
       <h1>Welcome to the Rock, Paper and Scissors Game!</h1>
@@ -22,20 +21,25 @@
         <input type="button" id="submit" value="Submit!">
       </div>
     </div>
+  </div>
+  <div id="game-chat-container">
+    <div id="chat-container">
+      <p id="chat-section"></p>
+      <div id="chat-input-bitton-container">
+        <input id="chat-input" type="text">
+        <input type="button" id="chat-button" value="send">
+      </div>
+    </div>
     <div id="game-container">
       <div id="user-interaction"></div>
-      <input type="button" id="restart" value="Another round!">
       <div id="image-container">
         <img class="choice-image" src="assets/image/paper.png" data-item="paper" />
         <img class="choice-image" src="assets/image/rock.png" data-item="rock" />
         <img class="choice-image" src="assets/image/scissors.png" data-item="scissors" />
       </div>
+      <input type="button" id="restart" value="Another round">
     </div>
-    <div id="chat-container">
-      <p id="chat-section"></p>
-      <input id="chat" type="text">
-      <input type="button" id="chat-button" value="Send!">
-    </div>
+    <div id="user-score"></div>
   </div>
 
   <!-- Javascript part-->

@@ -1,7 +1,7 @@
-
 const WIN = 1;
 const LOSE = 2;
 const DRAW = 0;
+let lostSeries = 0;
 
 const firebaseConfig = {
     apiKey: "AIzaSyC-LjUca_JPCrvoEIn_WkDFeJ6n2ocaWho",
@@ -25,17 +25,21 @@ function startGame() {
     $("#submit").on("click", event => {
         event.preventDefault();
         if(($("#nickname").val()) === "") { return; }
-        $("body").css('backgroundImage', 'linear-gradient(to right, navy, aqua, #94A5AD');
-        $("#form-container").hide();
-        $("#game-container").css('visibility', 'visible');
-        $("#chat-container").css('visibility', 'visible');
+        $("body").css('backgroundImage', 'linear-gradient(to right, navy, #94A5AD');
+        $("#start-container").hide();
+        $("#game-chat-container").css('visibility', 'visible');
         $("#user-interaction").text("Make your choice!");
         db.collection("players").doc($("#nickname").val()).set({
             won: 0,
             lose: 0
         }).catch(function (error) {
-            console.error("Error adding document: ", error);
+            console.error("Error adding document: ", error)
         });
+
+        const players = db.collection("players").doc($("#nickname").val());
+        players.onSnapshot (snapshot => {
+            $("#user-score").html(`won: ${snapshot.data().won} <br> lost: ${snapshot.data().lose}`);
+        })
 
         chatRef.set({ messages: [] });
 
@@ -50,6 +54,18 @@ function handleChoice() {
             $("#user-interaction").text(`You chose: ${choice}`);
             storeChoice(choice);
             $(".choice-image").hide();
+            if (choice === "rock") {
+                console.log(111);
+                $("#image-container").append('<img class="choice-img" src="assets/image/giphy.gif" width="400" height="330"/>');
+            }
+            if (choice === "paper") {
+                console.log(111);
+                $("#image-container").append('<img class="choice-img" src="assets/image/squidward-paper-kiss.gif" width="400" height="330"/>');
+            }
+            if (choice === "scissors") {
+                console.log(111);
+                $("#image-container").append('<img class="choice-img" src="assets/image/17547.gif" width="400" height="330"/>');
+            }
             storeChoice(choice);
         });
     })
@@ -82,9 +98,7 @@ roundRef.onSnapshot(snapshot => {
         let myUser = $("#nickname").val();
         let myChoice = snapshot.data()[myUser];
         let otherUser = users.filter(el => el !== myUser)[0];
-        console.log(otherUser, myUser);
         let otherUserChoice = snapshot.data()[otherUser];
-        console.log(myChoice, otherUserChoice);
         gameLogic(myChoice, otherUserChoice);
         roundRef.set({});
     }
@@ -121,20 +135,32 @@ function showMeResult(result) {
     if (result === WIN) {
         db.collection("players").doc($("#nickname").val()).update({ won: firebase.firestore.FieldValue.increment(1) });
         showResult.text("You won!");
+        lostSeries = 0;
         starNewRound();
     } else if (result === LOSE) {
         db.collection("players").doc($("#nickname").val()).update({ lose: firebase.firestore.FieldValue.increment(1) });
         showResult.text("You lost !");
+        lostSeries ++;
+        if (lostSeries === 2) {
+            $(".choice-img").remove();
+            $("#image-container").append('<iframe id="movie" src="https://giphy.com/embed/4wQJjaZy08YOQ" width="500" height="270" frameBorder="0" allowFullScreen></iframe>');
+            showResult.text("You lost !");
+            $("#user-interaction").text("Don't give up!");
+        }
         starNewRound();
     } else {
         showResult.text("Draw!");
+        lostSeries = 0;
         starNewRound();
     };
 }
 
 function starNewRound() {
+    // $("#image-container").append('<img src="assets/image/tie-game.gif" width="320vw" height="300vw"/>');
     $("#restart").show();
     $("#restart").on("click", () => {
+        $(".choice-img").remove();
+        $("#movie").remove();
         $(".choice-image").show();
         $("#user-interaction").text("Make your choice!");
         $(".choice-image").each(function () { $(this).on() });
@@ -150,8 +176,8 @@ $("#chat-button").on("click", () => {
 
 function chat() {
     let myUser = $("#nickname").val();
-    let chatInput = $("#chat").val();
-    let updateChat = {message: chatInput, nick: myUser };
+    let chatInput = $("#chat-input").val();
+    let updateChat = { message: chatInput, nick: myUser };
     console.log("sending " + JSON.stringify(updateChat));
     chatRef.update({
         messages: firebase.firestore.FieldValue.arrayUnion(updateChat)
@@ -166,7 +192,9 @@ chatRef.onSnapshot(snapshot => {
     }
     $("#chat-section").text("");
     for(let prop of snapshot.data().messages) {
-        $("#chat-section").prepend(`${prop.nick}: ${prop.message}`);
-        $("#chat-section").prepend($("<br>"));
+        $("#chat-section").prepend(`<p id="message">${prop.nick}: ${prop.message}</p>`);
+        if (prop.nick === $("#nickname").val()) {
+            $("#message").css('color', 'cyan');
+        }  
     }
 })
