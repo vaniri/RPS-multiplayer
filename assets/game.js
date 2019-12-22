@@ -24,8 +24,8 @@ function startGame() {
     $("#restart").hide();
     $("#submit").on("click", event => {
         event.preventDefault();
-        if(($("#nickname").val()) === "") { return; }
-        $("body").css('backgroundImage', 'linear-gradient(to right, navy, #94A5AD');
+        if (($("#nickname").val()) === "") { return; }
+        $("body").css('backgroundImage', 'linear-gradient(to right, rgba(60,55,106) , rgba(23,20,69))');
         $("#start-container").hide();
         $("#game-chat-container").css('visibility', 'visible');
         $("#user-interaction").text("Make your choice!");
@@ -37,8 +37,8 @@ function startGame() {
         });
 
         const players = db.collection("players").doc($("#nickname").val());
-        players.onSnapshot (snapshot => {
-            $("#user-score").html(`won: ${snapshot.data().won} <br> lost: ${snapshot.data().lose}`);
+        players.onSnapshot(snapshot => {
+            $("#score").html(`won: ${snapshot.data().won} <br> lost: ${snapshot.data().lose}`);
         })
 
         chatRef.set({ messages: [] });
@@ -55,15 +55,12 @@ function handleChoice() {
             storeChoice(choice);
             $(".choice-image").hide();
             if (choice === "rock") {
-                console.log(111);
                 $("#image-container").append('<img class="choice-img" src="assets/image/giphy.gif" width="400" height="330"/>');
             }
             if (choice === "paper") {
-                console.log(111);
                 $("#image-container").append('<img class="choice-img" src="assets/image/squidward-paper-kiss.gif" width="400" height="330"/>');
             }
             if (choice === "scissors") {
-                console.log(111);
                 $("#image-container").append('<img class="choice-img" src="assets/image/17547.gif" width="400" height="330"/>');
             }
             storeChoice(choice);
@@ -140,7 +137,7 @@ function showMeResult(result) {
     } else if (result === LOSE) {
         db.collection("players").doc($("#nickname").val()).update({ lose: firebase.firestore.FieldValue.increment(1) });
         showResult.text("You lost !");
-        lostSeries ++;
+        lostSeries++;
         if (lostSeries === 2) {
             $(".choice-img").remove();
             $("#image-container").append('<iframe id="movie" src="https://giphy.com/embed/4wQJjaZy08YOQ" width="500" height="270" frameBorder="0" allowFullScreen></iframe>');
@@ -156,7 +153,6 @@ function showMeResult(result) {
 }
 
 function starNewRound() {
-    // $("#image-container").append('<img src="assets/image/tie-game.gif" width="320vw" height="300vw"/>');
     $("#restart").show();
     $("#restart").on("click", () => {
         $(".choice-img").remove();
@@ -191,10 +187,11 @@ chatRef.onSnapshot(snapshot => {
         return;
     }
     $("#chat-section").text("");
-    for(let prop of snapshot.data().messages) {
-        $("#chat-section").prepend(`<p id="message">${prop.nick}: ${prop.message}</p>`);
+    for (let prop of snapshot.data().messages) {
+        let className = null;
         if (prop.nick === $("#nickname").val()) {
-            $("#message").css('color', 'cyan');
-        }  
+            className = "my-user";
+        } else { className = "enemy-user"; }
+        $("#chat-section").prepend(`<p><span class="${className}">${prop.nick}:</span> ${prop.message}</p>`);
     }
 })
